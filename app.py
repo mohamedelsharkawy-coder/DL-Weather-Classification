@@ -23,7 +23,7 @@ class_info = {
 }
 
 # Load the TFLite model
-interpreter = tf.lite.Interpreter(model_path="Resnet50.tflite")
+interpreter = tf.lite.Interpreter(model_path="mobilenet_int8.tflite")
 interpreter.allocate_tensors()
 
 # Get input/output details
@@ -44,10 +44,9 @@ if uploaded_file is not None:
     st.image(img, caption="Uploaded Image", use_column_width=True)
 
     # ---------- Image Processing ----------
-    img_array = image.img_to_array(img)
-    img_array = cv2.resize(img_array, (224, 224))
+    img = img.resize((224, 224))
+    img_array = image.img_to_array(img).astype(np.uint8)
     img_array = np.expand_dims(img_array, axis=0)
-    img_array = img_array / 255.0
 
     # ---------- Prediction ----------
     interpreter.set_tensor(input_details[0]['index'], img_array)
